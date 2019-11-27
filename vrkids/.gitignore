@@ -4,6 +4,7 @@
 templates
 static
 config.cfg
+juegos_vr
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
