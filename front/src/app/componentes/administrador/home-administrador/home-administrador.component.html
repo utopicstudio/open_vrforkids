@@ -1,0 +1,91 @@
+<tour-step-template>
+  <ng-template let-step="step">
+    <div role="dialog">
+      <div class="modal-header tour-step-content">
+        <h4 class="modal-title">{{step?.title}}</h4>
+      </div>
+      <div class="modal-body">
+          <p >{{step?.content}}</p>
+      </div>
+      <div class="modal-footer tour-step-navigation">
+        <button *ngIf="tourService.hasPrev(step)" class="btn btn-sm btn-success" (click)="tourService.prev()">«
+          {{step?.prevBtnTitle}}</button>
+        <button *ngIf="tourService.hasNext(step)" class="btn btn-sm btn-success"
+          (click)="tourService.next()">{{step?.nextBtnTitle}} »</button>
+        <button class="btn btn-sm btn-warning" (click)="terminarTutorial()"> Terminar </button>
+      </div>
+    </div>
+  </ng-template>
+</tour-step-template>
+<div class="my-container">
+
+  <ngx-loading [show]="contadorLoading!=6" [config]="{ fullScreenBackdrop: true,
+    backdropBackgroundColour: 'rgba(0, 0, 0, 1)', backdropBorderRadius: '10px',
+    primaryColour: '#ffffff', secondaryColour: '#ffffff', tertiaryColour: '#ffffff' }">
+  </ngx-loading>
+</div>
+<app-header-admin></app-header-admin>
+
+<div class="my-container">
+  <ngx-loading [show]="loading" [config]="{ fullScreenBackdrop: true,
+    backdropBackgroundColour: 'rgba(0, 0, 0, 1)', backdropBorderRadius: '10px',
+    primaryColour: '#ffffff', secondaryColour: '#ffffff', tertiaryColour: '#ffffff' }">
+  </ngx-loading>
+</div>
+
+
+<main *ngIf="loadingPantalla">
+
+  <section class="section section-lg">
+    <div class="container">
+      <div class="row row-grid align-items-center">
+        <div class="col-lg-12">
+
+          <h2 class="display-3 text-center">Administrador: {{administrador.nombres}}
+            {{administrador.apellido_paterno}}
+            {{administrador.apellido_materno}}
+          </h2>
+          <br>
+
+          <div tourAnchor="home.graph1">
+            <h2 class="title " >Aprobación y Desaprobación de Recursos</h2><br>
+            <div>
+              <div>
+                <div tourAnchor="start.tour3" style="display: block">
+                  <canvas *ngIf="loadedBarras; else loadingTemplate" baseChart [datasets]="barChartData" [labels]="barChartLabels"
+                    [options]="barChartOptions" [legend]="barChartLegend" [chartType]="barChartType">
+                  </canvas>
+                  <ng-template #loadingTemplate>
+                    <div style="width: 100%;min-height:200px; border: 1px solid #DDD;background-color: #EDEDED;text-align: center" class="jumbotron"> 
+                        <h2 class="text-muted"><i class="fa fa-spinner fa-spin"></i> Cargando </h2>
+                      </div>
+                  </ng-template>
+
+                </div>
+              </div>
+            </div>     
+          </div>
+
+          <br><br>
+
+          <div tourAnchor="home.graph2">
+            <h2 class="title " tourAnchor="start.tour2">Recursos Activos en Asignaturas</h2><br>
+            <div>
+              <div>
+                <div style="display: block">
+                  <canvas *ngIf="loadedTorta" baseChart [data]="polarAreaChartData" [labels]="polarAreaChartLabels"
+                    [legend]="polarAreaLegend" [chartType]="polarAreaChartType">
+                  </canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+        <hr>
+      </div>
+    </div>
+  </section>
+</main>
+<app-footer-admin></app-footer-admin>

@@ -1,0 +1,94 @@
+<div class="my-container">
+  <ngx-loading [show]="loading || contadorLoading!=1" [config]="{ fullScreenBackdrop: true,
+    backdropBackgroundColour: 'rgba(0, 0, 0, 1)', backdropBorderRadius: '10px',
+    primaryColour: '#ffffff', secondaryColour: '#ffffff', tertiaryColour: '#ffffff' }">
+  </ngx-loading>
+</div>
+<app-header-admin></app-header-admin>
+<main>
+  <tour-step-template>
+    <ng-template let-step="step">
+      <div role="dialog">
+        <div class="modal-header tour-step-content">
+          <h4 class="modal-title">{{step?.title}}</h4>
+        </div>
+        <div class="modal-body">
+          <p>{{step?.content}}</p>
+        </div>
+        <div class="modal-footer tour-step-navigation">
+          <button *ngIf="tourService.hasPrev(step)" class="btn btn-sm btn-success" (click)="tourService.prev()">«
+            {{step?.prevBtnTitle}}</button>
+          <button *ngIf="tourService.hasNext(step)" class="btn btn-sm btn-success"
+            (click)="tourService.next()">{{step?.nextBtnTitle}} »</button>
+          <button class="btn btn-sm btn-warning" (click)="terminarTutorial()"> Terminar </button>
+        </div>
+      </div>
+    </ng-template>
+  </tour-step-template>
+  <section class="section">
+    <div class="container" tourAnchor="cursos.tabla">
+      <h2 class="display-3">Cursos Plataforma</h2>
+      <div class="row row-grid align-items-center">
+        <div class="col-xl-12">
+          <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link active" id="grado-tab" data-toggle="tab" href="#grado_existente" role="tab"
+                aria-controls="grado" aria-selected="false"> Cursos
+              </a>
+            </li>
+          </ul>
+
+          <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="grado_existente" role="tabpanel" aria-labelledby="grado-tab">
+              <div class="mb-8 ">
+                <br>
+                <div class="table-responsive-lg">
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th scope="col"> Nivel </th>
+                        <th scope="col"> Profesor </th>
+                        <th scope="col"> Estudiantes </th>
+                        <th scope="col">Acción</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let grado of grados_tabla">
+                        <td>{{ grado.nivel }}°{{ grado.identificador }}</td>
+                        <td>{{grado.profesor.nombres}} {{grado.profesor.apellido_paterno}}
+                          {{grado.profesor.apellido_materno}}</td>
+                        <td> {{grado.cant_alumnos}} </td>
+                        <td>
+                          <button type="button" class="btn btn-info btn-sm"
+                            (click)="verAlumnos(grado.alumnos, grado.nivel, grado.identificador)"><i
+                              class="fas fa-eye"></i></button>
+                          <button type="button" class="btn btn-danger btn-sm" (click)="eliminarGrado(grado.id)"><i
+                              class="fas fa-trash-alt"></i></button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div class="d-flex justify-content-between p-2">
+                    <ngb-pagination [collectionSize]="collectionSizeGrado" [(page)]="pageGrado"
+                      [pageSize]="pageSizeGrado">
+                    </ngb-pagination>
+
+                    <select class="custom-select" style="width: auto" [(ngModel)]="pageSizeGrado">
+                      <option [ngValue]="2">2 alumnos por página</option>
+                      <option [ngValue]="4">4 alumnos por página</option>
+                      <option [ngValue]="6">6 alumnos por página</option>
+                    </select>
+                  </div>
+                  <div class="text-center">
+                    <button tourAnchor="cursos.nuevo" type="button" class="btn btn-outline-primary" (click)="nuevoGrado()"> Nuevo Curso </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+<app-footer-admin></app-footer-admin>

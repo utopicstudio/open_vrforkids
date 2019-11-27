@@ -1,0 +1,133 @@
+<app-header-admin></app-header-admin>
+<main>
+<section class="section">
+  <div class="container">
+    <h2 class="display-3">Detalle Grado ({{grado.nivel}}°{{grado.identificador}})</h2>
+    <div class="row row-grid align-items-center">
+      <div class="col-xl-12">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" id="alumno-tab" data-toggle="tab" href="#alumno_existente" role="tab" aria-controls="alumno"
+              aria-selected="false"> Alumnos
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="curso-tab" data-toggle="tab" href="#curso_existente" role="tab" aria-controls="curso"
+              aria-selected="false"> Cursos
+            </a>
+          </li>
+        </ul>
+            
+        <div class="tab-content" id="myTabContent">    
+          <div class="tab-pane fade show active" id="alumno_existente" role="tabpanel" aria-labelledby="alumno-tab">
+            <div class="mb-8 ">
+              <br>
+              <div class="table-responsive-lg"> 
+                  <table class="table table-striped">
+                      <thead>
+                      <tr>
+                        <th scope="col"></th>
+                        <th scope="col">Usuario</th>
+                        <th scope="col">Matricula</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Teléfono</th>
+                        <th scope="col">Acción</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr *ngFor="let alumno of alumnos_tabla">
+                        <th scope="row">
+                            <img [src]='alumno.imagen' class="mr-2" style="width: 50px">
+                        </th>
+                        <td>{{ alumno.nombre_usuario }}</td>
+                        <td>{{ alumno.matricula}}</td>
+                        <td>{{ alumno.email}}</td>
+                        <td>{{ alumno.telefono}}</td>
+                        <td>
+                            <button type="button" class="btn btn-info btn-sm" (click)="verDetallePerfil('alumno',alumno.id)" ><i class="far fa-eye"></i></button>
+                        </td>
+                      </tr>
+                      </tbody>
+                  </table>
+                  <div class="d-flex justify-content-between p-2">
+                      <ngb-pagination [collectionSize]="collectionSizeAlumno" [(page)]="pageAlumno" [pageSize]="pageSizeAlumno">
+                      </ngb-pagination>
+                      
+                      <select class="custom-select" style="width: auto" [(ngModel)]="pageSizeAlumno">
+                          <option [ngValue]="2">2 alumnos por página</option>
+                          <option [ngValue]="4">4 alumnos por página</option>
+                          <option [ngValue]="6">6 alumnos por página</option>
+                      </select>
+                  </div>
+                  <div class="text-center">
+                      <button type="button" class="btn btn-outline-danger" (click)="volver()">Volver</button>
+                  </div>
+              </div>
+          </div>
+          </div>
+          <div class="tab-pane fade show" id="curso_existente" role="tabpanel" aria-labelledby="curso-tab">
+            <div class="mb-8 ">
+              <br>
+              <div class="table-responsive-lg"> 
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                      <th scope="col"></th>
+                      <th scope="col">Nombre</th>
+                      <th scope="col">Profesor</th>
+                      <th scope="col">Asignatura</th>
+                      <th scope="col">Creacion</th>
+                      <th scope="col">Activo</th>
+                      <th scope="col">Acción</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let curso of cursos_tabla">
+                      <th scope="row">
+                        <img [src]='curso.imagen' class="mr-2" style="width: 50px">
+                      </th>
+                      <td>{{ curso.nombre }}</td>
+                      <td>{{ curso.profesor.nombres}} {{ curso.profesor.apellido_paterno}} {{ curso.profesor.apellido_materno}}</td>
+                      <td>{{ curso.asignatura.nombre}}</td>
+                      <td>{{ curso.fecha_creacion}}</td>
+                      <td>
+                        <div *ngIf="curso.activo==false">
+                          <div class="icon icon-shape bg-gradient-danger rounded-circle text-white mb-1">
+                            <i class="far fa-times-circle text-white" aria-hidden="true"></i>
+                          </div>
+                        </div>
+                        <div *ngIf="curso.activo==true">
+                          <div class="icon icon-shape bg-gradient-success rounded-circle text-white mb-1">
+                            <i class="far fa-check-circle text-white" aria-hidden="true"></i>
+                          </div>
+                        </div>
+                      </td>
+                      <td><button type="button" class="btn btn-info btn-sm" (click)="ver_detalle_curso(curso.id)"><i class="far fa-eye"></i></button></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="d-flex justify-content-between p-2">
+                  <ngb-pagination [collectionSize]="collectionSizeCurso" [(page)]="pageCurso" [pageSize]="pageSizeCurso">
+                  </ngb-pagination>
+                          
+                  <select class="custom-select" style="width: auto" [(ngModel)]="pageSizeCurso">
+                      <option [ngValue]="2">2 cursos por página</option>
+                      <option [ngValue]="4">4 cursos por página</option>
+                      <option [ngValue]="6">6 cursos por página</option>
+                  </select>
+                </div>
+                <div class="text-center">
+                  <button type="button" class="btn btn-outline-danger" (click)="volver()">Volver</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+<app-footer-admin></app-footer-admin>

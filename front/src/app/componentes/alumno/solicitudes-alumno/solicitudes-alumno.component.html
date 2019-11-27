@@ -1,0 +1,141 @@
+<div class="my-container">
+  <ngx-loading [show]="contadorLoading!=3" [config]="{ fullScreenBackdrop: true,
+        backdropBackgroundColour: 'rgba(0, 0, 0, 1)', backdropBorderRadius: '10px',
+        primaryColour: '#ffffff', secondaryColour: '#ffffff', tertiaryColour: '#ffffff' }">
+  </ngx-loading>
+</div>
+<app-header-alumno></app-header-alumno>
+<tour-step-template>
+  <ng-template let-step="step">
+    <div role="dialog">
+      <div class="modal-header tour-step-content">
+        <h4 class="modal-title">{{step?.title}}</h4>
+      </div>
+      <div class="modal-body">
+        <p>{{step?.content}}</p>
+      </div>
+      <div class="modal-footer tour-step-navigation">
+        <button *ngIf="tourService.hasPrev(step)" class="btn btn-sm btn-success" (click)="tourService.prev()">«
+          {{step?.prevBtnTitle}}</button>
+        <button *ngIf="tourService.hasNext(step)" class="btn btn-sm btn-success"
+          (click)="tourService.next()">{{step?.nextBtnTitle}} »</button>
+        <button class="btn btn-sm btn-warning" (click)="terminarTutorial()"> Terminar </button>
+      </div>
+    </div>
+  </ng-template>
+</tour-step-template>
+<main>
+  <section class="section">
+    <div class="container" tourAnchor="solicitudes">
+      <h2 class="display-3">Solicitudes</h2>
+      <div class="row row-grid align-items-center">
+        <div class="col-xl-12">
+          <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" tourAnchor="recursos_disponibles">
+              <a class="nav-link active" id="curso-tab" data-toggle="tab" href="#cursos_disponibles" role="tab"
+                aria-controls="curso" aria-selected="true">Recursos Disponibles</a>
+            </li>
+            <li class="nav-item" tourAnchor="solicitudes_realizadas">
+              <a class="nav-link" id="solicitudes-tab" data-toggle="tab" href="#mis_solicitudes" role="tab"
+                aria-controls="solicitudes" aria-selected="true">Mis Solicitudes</a>
+            </li>
+          </ul>
+
+          <div class="tab-content" id="myTabContent">
+
+            <div class="tab-pane fade show active" id="cursos_disponibles" role="tabpanel" aria-labelledby="curso-tab">
+              <div class="mb-8 ">
+                <br>
+
+
+                <div class="table-responsive-lg">
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th scope="col"></th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Profesor</th>
+                        <th scope="col">Asignatura</th>
+                        <th scope="col">Acción</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let recurso of recursos_tabla">
+                        <th scope="row"><img [src]='recurso.imagen' class="mr-2" style="width: 50px"></th>
+                        <td>{{ recurso.nombre }}</td>
+                        <td>{{ recurso.profesor.nombres}} {{ recurso.profesor.apellido_paterno}}
+                          {{ recurso.profesor.apellido_materno}}</td>
+                        <td>{{ recurso.asignatura.nombre}}</td>
+                        <td>
+                          <button (click)="formularioSolicitud(recurso.id, recurso.nombre)" class="btn btn-warning"
+                            [routerLink]=''>Solicitar Recurso</button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div class="d-flex justify-content-between p-2">
+                    <ngb-pagination [collectionSize]="collectionSizeRecurso" [(page)]="pageRecurso"
+                      [pageSize]="pageSizeRecurso">
+                    </ngb-pagination>
+
+                    <select class="custom-select" style="width: auto" [(ngModel)]="pageSizeRecurso">
+                      <option [ngValue]="2">2 recursos por página</option>
+                      <option [ngValue]="4">4 recursos por página</option>
+                      <option [ngValue]="6">6 recursos por página</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="tab-pane fade show" id="mis_solicitudes" role="tabpanel" aria-labelledby="solicitudes-tab">
+              <div class="mb-8 ">
+                <br>
+                <div class="table-responsive-lg">
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th scope="col"></th>
+                        <th scope="col">Recurso</th>
+                        <th scope="col">Profesor</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col">Historial</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let inscripcion of inscripciones_tabla">
+                        <td><img [src]='inscripcion.curso.imagen' class="mr-2" style="width: 50px"></td>
+                        <td>{{ inscripcion.curso.nombre }}</td>
+                        <td>{{ inscripcion.curso.profesor.nombres }} {{ inscripcion.curso.profesor.apellido_paterno}}
+                          {{ inscripcion.curso.profesor.apellido_materno}}</td>
+                        <td>{{ inscripcion.estado }}</td>
+                        <td>
+                          <button type="button" class="btn btn-info btn-sm"
+                            (click)="mostrarHistorialInscripcion(inscripcion.historial)"><i
+                              class="fas fa-eye"></i></button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div class="d-flex justify-content-between p-2">
+                    <ngb-pagination [collectionSize]="collectionSizeInscripcion" [(page)]="pageInscripcion"
+                      [pageSize]="pageSizeInscripcion">
+                    </ngb-pagination>
+
+                    <select class="custom-select" style="width: auto" [(ngModel)]="pageSizeInscripcion">
+                      <option [ngValue]="2">2 cursos por página</option>
+                      <option [ngValue]="4">4 cursos por página</option>
+                      <option [ngValue]="6">6 cursos por página</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+<app-footer-alumno></app-footer-alumno>

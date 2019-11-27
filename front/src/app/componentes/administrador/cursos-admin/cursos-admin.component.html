@@ -1,0 +1,155 @@
+<div class="my-container">
+  <ngx-loading [show]="loading || contadorLoading!=2" [config]="{ fullScreenBackdrop: true,
+    backdropBackgroundColour: 'rgba(0, 0, 0, 1)', backdropBorderRadius: '10px',
+    primaryColour: '#ffffff', secondaryColour: '#ffffff', tertiaryColour: '#ffffff' }">
+  </ngx-loading>
+</div>
+<app-header-admin></app-header-admin>
+<main>
+  <tour-step-template>
+    <ng-template let-step="step">
+      <div role="dialog">
+        <div class="modal-header tour-step-content">
+          <h4 class="modal-title">{{step?.title}}</h4>
+        </div>
+        <div class="modal-body">
+          <p>{{step?.content}}</p>
+        </div>
+        <div class="modal-footer tour-step-navigation">
+          <button *ngIf="tourService.hasPrev(step)" class="btn btn-sm btn-success" (click)="tourService.prev()">«
+            {{step?.prevBtnTitle}}</button>
+          <button *ngIf="tourService.hasNext(step)" class="btn btn-sm btn-success"
+            (click)="tourService.next()">{{step?.nextBtnTitle}} »</button>
+          <button class="btn btn-sm btn-warning" (click)="terminarTutorial()"> Terminar </button>
+        </div>
+      </div>
+    </ng-template>
+  </tour-step-template>
+  <section class="section">
+    <div class="container" tourAnchor="recursos.tabla">
+      <h2 class="display-3">Recursos Plataforma</h2>
+      <div class="row row-grid align-items-center">
+        <div class="col-xl-12">
+          <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" tourAnchor="recursos.recursos">
+              <a class="nav-link active" id="curso-tab" data-toggle="tab" href="#curso_existente" role="tab"
+                aria-controls="curso" aria-selected="false">Recursos</a>
+            </li>
+            <li class="nav-item" tourAnchor="recursos.recursosBase">
+              <a class="nav-link" id="cursoBase-tab" data-toggle="tab" href="#cursoBase_existente" role="tab"
+                aria-controls="cursoBase" aria-selected="false">Recursos Base</a>
+            </li>
+          </ul>
+
+          <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="curso_existente" role="tabpanel" aria-labelledby="curso-tab">
+              <div class="mb-8 ">
+                <br>
+                <div class="table-responsive-lg">
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th scope="col"></th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Profesor</th>
+                        <th scope="col">Asignatura</th>
+                        <th scope="col">Creacion</th>
+                        <th scope="col">Activo</th>
+                        <th scope="col">Acción</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let curso of cursos_tabla">
+                        <th scope="row">
+                          <img [src]='curso.imagen' class="mr-2" style="width: 50px">
+                        </th>
+                        <td>{{ curso.nombre }}</td>
+                        <td>{{ curso.profesor}}</td>
+                        <td>{{ curso.nombre_asignatura}}</td>
+                        <td>{{ curso.creacion}}</td>
+                        <td>
+                          <div *ngIf="curso.activo==false">
+                            <div class="icon icon-shape bg-gradient-danger rounded-circle text-white mb-1">
+                              <i class="far fa-times-circle text-white" aria-hidden="true"></i>
+                            </div>
+                          </div>
+                          <div *ngIf="curso.activo==true">
+                            <div class="icon icon-shape bg-gradient-success rounded-circle text-white mb-1">
+                              <i class="far fa-check-circle text-white" aria-hidden="true"></i>
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          <div class="row">
+                              <button type="button" class="btn btn-info btn-sm" (click)="ver_detalle_curso(curso.id)"><i
+                                class="far fa-eye"></i></button>
+                            <button *ngIf="curso.activo" type="button" class="btn btn-danger btn-sm" (click)="deleteCurso(curso.id)"><i class="fas fa-times"></i></button>
+                            <button *ngIf="!curso.activo" type="button" class="btn btn-danger btn-sm" (click)="deleteRecurso(curso.id)"><i class="fas fa-trash-alt"></i></button>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div class="d-flex justify-content-between p-2">
+                    <ngb-pagination [collectionSize]="collectionSizeCurso" [(page)]="pageCurso"
+                      [pageSize]="pageSizeCurso">
+                    </ngb-pagination>
+
+                    <select class="custom-select" style="width: auto" [(ngModel)]="pageSizeCurso">
+                      <option [ngValue]="2">2 cursos por página</option>
+                      <option [ngValue]="4">4 cursos por página</option>
+                      <option [ngValue]="6">6 cursos por página</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="tab-pane fade show" id="cursoBase_existente" role="tabpanel" aria-labelledby="cursoBase-tab">
+              <div class="mb-8 ">
+                <br>
+                <div class="table-responsive-lg">
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th scope="col"></th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Descripcion</th>
+                        <th scope="col">Preview</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let curso of cursos_base_tabla">
+                        <th scope="row">
+                          <img [src]='curso.imagen' class="mr-2" style="width: 50px">
+                        </th>
+                        <td>{{ curso.nombre }}</td>
+                        <td>{{ curso.descripcion}}</td>
+                        <td>
+                          <button type="button" class="btn btn-info btn-sm" (click)="previewCursoBase(curso.id)"><i
+                            class="far fa-eye"></i></button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div class="d-flex justify-content-between p-2">
+                    <ngb-pagination [collectionSize]="collectionSizeCursoBase" [(page)]="pageCursoBase"
+                      [pageSize]="pageSizeCursoBase">
+                    </ngb-pagination>
+
+                    <select class="custom-select" style="width: auto" [(ngModel)]="pageSizeCursoBase">
+                      <option [ngValue]="2">2 recursos por página</option>
+                      <option [ngValue]="4">4 recursos por página</option>
+                      <option [ngValue]="6">6 recursos por página</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+<app-footer-admin></app-footer-admin>

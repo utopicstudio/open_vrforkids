@@ -1,0 +1,85 @@
+<div class="my-container">
+  <ngx-loading [show]="loading" [config]="{ fullScreenBackdrop: true,
+    backdropBackgroundColour: 'rgba(0, 0, 0, 1)', backdropBorderRadius: '10px',
+    primaryColour: '#ffffff', secondaryColour: '#ffffff', tertiaryColour: '#ffffff' }">
+  </ngx-loading>
+</div>
+<app-header-profesor></app-header-profesor>
+<tour-step-template>
+  <ng-template let-step="step">
+    <div role="dialog">
+      <div class="modal-header tour-step-content">
+        <h4 class="modal-title">{{step?.title}}</h4>
+      </div>
+      <div class="modal-body">
+          <p >{{step?.content}}</p>
+      </div>
+      <div class="modal-footer tour-step-navigation">
+        <button *ngIf="tourService.hasPrev(step)" class="btn btn-sm btn-success" (click)="tourService.prev()">«
+          {{step?.prevBtnTitle}}</button>
+        <button *ngIf="tourService.hasNext(step)" class="btn btn-sm btn-success"
+          (click)="tourService.next()">{{step?.nextBtnTitle}} »</button>
+        <button class="btn btn-sm btn-warning" (click)="terminarTutorial()"> Terminar </button>
+      </div>
+    </div>
+  </ng-template>
+</tour-step-template>
+<main>
+    <section class="section">
+      <div class="container" tourAnchor="mis_cursos">
+        <div id="prueba" class="prueba"></div>
+        <h2 class="display-3" id="prueba">Mis Cursos</h2>
+        <div class="row row-grid align-items-center">
+          <div class="col-xl-12">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+              <li class="nav-item">
+                  <a class="nav-link active" id="alumno-tab" data-toggle="tab" href="#alumno_existente" role="tab" aria-controls="alumno"
+                  aria-selected="false">Cursos</a>
+              </li>
+            </ul>
+              
+            <div class="tab-content" id="myTabContent">    
+              <div class="tab-pane fade show active" id="alumno_existente" role="tabpanel" aria-labelledby="alumno-tab">
+                <div class="mb-8 ">
+                  <br>
+                  <div class="table-responsive-lg"> 
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                          <th scope="col">Nombre</th>
+                          <th scope="col">Alumnos</th>
+                          <th scope="col">Nivel de Logro</th>
+                          <th scope="col"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let curso of cursos_tabla">
+                            <td>{{ curso.nivel }} º {{ curso.identificador }}</td>
+                            <td>{{curso.alumnos.length}}</td>
+                            <td>{{ curso.progreso }}</td>
+                            <td>
+                              <button type="button" class="btn btn-info btn-sm" (click)="verAlumnos(curso.alumnos, curso.nivel,curso.identificador)"><i class="far fa-eye"></i></button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="d-flex justify-content-between p-2">
+                        <ngb-pagination [collectionSize]="collectionSizeAlumno" [(page)]="pageAlumno" [pageSize]="pageSizeAlumno">
+                        </ngb-pagination>
+                        
+                        <select class="custom-select" style="width: auto" [(ngModel)]="pageSizeAlumno">
+                            <option [ngValue]="2">2 cursos por página</option>
+                            <option [ngValue]="4">4 cursos por página</option>
+                            <option [ngValue]="6">6 cursos por página</option>
+                        </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+</main>
+<app-footer-profesor></app-footer-profesor>
