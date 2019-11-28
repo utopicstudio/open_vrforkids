@@ -5,9 +5,6 @@ python:
 before_install:
   - sudo apt-get install python3-pip
   - sudo apt-get install -y python3-setuptools
-  - sudo apt-get install -y python3-virtualenv virtualenv
-  - virtualenv env
-  - source env/bin/activate
 install:
   - sudo pip3 install -r requirements.txt
   #- sudo pip install .
@@ -21,5 +18,5 @@ script:
   - export FLASK_APP=/home/travis/build/utopicstudio/open_vrforkids/vrkids
   - export FLASK_ENV=development
   - cd /home/travis/build/utopicstudio/open_vrforkids/vrkids
-  - pip3 freeze
   - python3 -m pytest -v
+  - pip3 freeze
