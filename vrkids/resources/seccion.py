@@ -58,6 +58,7 @@ class SeccionBajar(Resource):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('auth-token', type = str, required=True, location='headers')
         super(SeccionBajar, self).__init__()
+
     def put(self,id):
         args = self.reqparse.parse_args()
         token = args.get('auth-token')
@@ -89,6 +90,7 @@ class Secciones(Resource):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('auth-token', type = str, required=True, location='headers')
         super(Secciones, self).__init__()
+
     def delete(self,id):
         args = self.reqparse.parse_args()
         token = args.get('auth-token')
@@ -206,8 +208,8 @@ class SeccionesColegio(Resource):
 
 class SeccionImagenItem(Resource):
     def post(self,id):
-        upload_directory = os.path.join(current_app.config.get("UPLOAD_FOLDER", "uploads"), 
-                                        "secciones")
+        upload_folder = current_app.config.get("UPLOAD_FOLDER", "uploads")
+        upload_directory = os.path.join(upload_folder, "secciones")
         imagen = Image.open(request.files['imagen'].stream).convert("RGB")
         image_path = os.path.join(upload_directory, "%s.jpg" % str(id))
         imagen.save(image_path)
@@ -225,7 +227,7 @@ class SeccionImagenItem(Resource):
                         "secciones")
 
         f = Path(os.path.join(upload_directory, "%s_thumbnail.jpg" % str(id)))
-        if(f.exists()== False):
+        if(f.exists() == False):
             return send_file('uploads/secciones/default_thumbnail.jpg')
 
         image_path = os.path.join(upload_directory, "%s_thumbnail.jpg" % str(id))
@@ -236,7 +238,7 @@ class SeccionImagenOriginal(Resource):
         upload_directory = os.path.join(current_app.config.get("UPLOAD_FOLDER", "uploads"), 
                         "secciones")
         f = Path(os.path.join(upload_directory, "%s.jpg" % str(id)))
-        if(f.exists()== False):
+        if(f.exists() == False):
             return send_file('uploads/secciones/default.jpg')
 
         image_path = os.path.join(upload_directory, "%s.jpg" % str(id))
@@ -250,11 +252,10 @@ class SeccionImagenDefaultItem(Resource):
         return {'Response':'exito'}
 
 class SeccionesColegioInicio(Resource):
-    def get(self,id):
+    def get(self, id):
         institucion = Institucion.objects(id=id).first()   
         secciones = []
         cant_secciones = Seccion.objects(institucion = institucion.id, activo=True).count()
-        posicion = 1
         for pos in range (0,cant_secciones) :
             seccion = Seccion.objects(institucion = institucion.id, posicion = pos+1, activo=True).first()
             if seccion != None and seccion.activo:
