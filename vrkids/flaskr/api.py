@@ -7,7 +7,9 @@ import json
 import os
 
 app = Flask(__name__)
-app.secret_key = os.urandom(24)
+app.config.secret_key = os.urandom(24)
+app.config["SECRET_KEY"] = os.urandom(24)
+app.config["UPLOAD_FOLDER"] = 'uploads'
 CORS(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -29,6 +31,8 @@ def init_modules(app, api):
     from resources import seccion
     from resources import grado
     from resources import login
+    from resources import categoria
+    from resources import vrkids
 
     curso.init_module(api)
     alumno.init_module(api)
@@ -42,8 +46,13 @@ def init_modules(app, api):
     seccion.init_module(api)
     grado.init_module(api)
     login.init_module(api)
+    categoria.init_module(api)
+    vrkids.init_module(api)
+    administrador.AdminGenerate()
+    
 
 init_modules(app, api)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True,
+            port=app.config.get('PORT_API', 5000))

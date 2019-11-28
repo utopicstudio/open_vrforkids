@@ -16,6 +16,7 @@ import json
 from PIL import Image
 import os
 from unipath import Path
+from os.path import dirname, abspath
 
 def init_module(api):
     api.add_resource(AlumnoToken, '/alumno')
@@ -194,16 +195,16 @@ class Alumnos(Resource):
         data = request.data.decode()
         data = json.loads(data)
         alumno = Alumno()
-        alumno.nombres = data['nombres']
-        alumno.apellido_paterno = data['apellido_paterno']
-        alumno.apellido_materno = data['apellido_materno']
-        alumno.telefono = data['telefono']
-        alumno.email = data['email']
-        alumno.nombre_usuario = data['nombre_usuario']        
-        alumno.encrypt_password(data['nombre_usuario'])
-        alumno.matricula = data['matricula']
+        alumno.nombres = data['data_personal']['nombres']
+        alumno.apellido_paterno = data['data_personal']['apellido_paterno']
+        alumno.apellido_materno = data['data_personal']['apellido_materno']
+        alumno.telefono = data['data_personal']['telefono']
+        alumno.email = data['data_personal']['email']
+        alumno.nombre_usuario = data['data_academico']['nombre_usuario']        
+        alumno.encrypt_password(data['data_academico']['nombre_usuario'])
+        alumno.matricula = data['data_academico']['matricula']
         alumno.institucion = None
-        grado = Grado.objects(id=data['grado']).first()
+        grado = Grado.objects().first()
         alumno.grado = grado
         alumno.save()
         return {'Response': 'exito', 'id': str(alumno.id)}
@@ -264,8 +265,10 @@ class AlumnosColegio(Resource):
 
 class AlumnoImagenItem(Resource):
     def post(self,id):
-        upload_directory = os.path.join(current_app.config.get("UPLOAD_FOLDER", "uploads"), 
-                                        "alumnos")
+        import os.path
+        upload_directory = os.path.join("flaskr",
+                        current_app.config.get("UPLOAD_FOLDER","uploads") ,
+                        "alumnos")        
         imagen = Image.open(request.files['imagen'].stream).convert("RGB")
         image_path = os.path.join(upload_directory, "%s.jpg" % str(id))
         imagen.save(image_path)
@@ -279,9 +282,9 @@ class AlumnoImagenItem(Resource):
         return {'Response': 'exito'}
     
     def get(self,id):
-        upload_directory = os.path.join(current_app.config.get("UPLOAD_FOLDER", "uploads"), 
+        import os.path
+        upload_directory = os.path.join(current_app.config.get("UPLOAD_FOLDER","uploads") ,
                         "alumnos")
-
         f = Path(os.path.join(upload_directory, "%s_thumbnail.jpg" % str(id)))
         if(f.exists()== False):
             return send_file('uploads/alumnos/default_thumbnail.jpg')

@@ -4,6 +4,7 @@ import json
 import pytest
 from io import BytesIO
 from os.path import dirname, abspath
+from datetime import datetime
 
 from flaskr import api
 from models.alumno import Alumno
@@ -90,9 +91,10 @@ def test_post_alumno(client):
         'imagen': 'path/to/img',
         'grado': grado
     }
-
+    now = datetime.now()
+    now = now.strftime("%m/%d/%Y, %H:%M:%S")
     data_academico = {
-        'nombre_usuario': 'usuario_prueba',
+        'nombre_usuario': 'usuario_prueba_'+now,
         'password': 'asd',
         'matricula': 'matricula'
     }
@@ -100,7 +102,7 @@ def test_post_alumno(client):
     data = {
         'data_personal': data_personal,
         'data_academico': data_academico
-    }
+    }    
 
     data = json.dumps(data)
     data = data.encode()

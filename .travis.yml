@@ -14,7 +14,7 @@ script:
   - sudo apt-get update
   - sudo apt-get install -y mongodb-org
   - sudo service mongod start
-  - export FLASK_APP=/home/travis/build/open_vrforkids/backend_vr
+  - export FLASK_APP=/home/travis/build/open_vrforkids
   - export FLASK_ENV=development
-  - cd /home/travis/build/open_vrforkids/backend_vr
+  - cd /home/travis/build/open_vrforkids/open_vrforkids
   - python3 -m pytest -v

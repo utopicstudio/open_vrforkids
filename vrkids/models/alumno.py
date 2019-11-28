@@ -27,7 +27,7 @@ class Alumno(gj.Document, UserMixin):
     apellido_materno = db.StringField(max_length=20)
     email = db.EmailField()
     telefono = db.StringField(max_length=20)
-    nombre_usuario = db.StringField(max_length=20, unique=True)
+    nombre_usuario = db.StringField(max_length=50, unique=True)
     password = db.StringField(max_length=255)
     matricula = db.StringField(max_length=20)
     institucion = db.ReferenceField(Institucion)
@@ -42,6 +42,7 @@ class Alumno(gj.Document, UserMixin):
 
     def to_dict(self, full=True):
         institucion = ""
+        grado = ""
         data ={
             "id": str(self.id),
             "nombre_completo": "%s %s %s" % (self.nombres, self.apellido_paterno, self.apellido_materno),
@@ -51,6 +52,8 @@ class Alumno(gj.Document, UserMixin):
             return data
         if self.institucion != None:
             institucion = self.institucion.to_dict()
+        if self.grado != None:
+            grado = self.grado.to_dict()
         data.update({
             "nombres": self.nombres,
             "apellido_paterno": self.apellido_paterno,
@@ -58,7 +61,7 @@ class Alumno(gj.Document, UserMixin):
             "email": self.email,
             "telefono": self.telefono,
             "matricula": self.matricula,
-            "grado": self.grado.to_dict(),
+            "grado": grado,
             "imagen": self.imagen,
             "activo": self.activo,
             "primera_vez": self.primera_vez,
