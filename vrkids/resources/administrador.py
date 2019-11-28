@@ -9,7 +9,7 @@ from models.grado import Grado
 from flask_restful import Api, Resource, url_for
 from libs.to_dict import mongo_to_dict
 import json
-from unipath import Path
+
 from flask_restful import reqparse
 
 def init_module(api):
