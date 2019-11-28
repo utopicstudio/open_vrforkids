@@ -5,7 +5,7 @@ python:
 before_install:
   - sudo apt-get install python3-pip
 install:
-  - sudo pip3 install -r /home/travis/build/open_vrforkids/open_vrforkids/vrkids/requirements.txt
+  - sudo pip3 install -r requirements.txt
   #- sudo pip install .
 script:
   - sudo apt-get install -y python-logilab-common
