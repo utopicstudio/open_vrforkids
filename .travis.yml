@@ -1,4 +1,4 @@
-dist: trusty
+dist: bionic
 languaje: python
 python:
   - "3.5"
@@ -6,7 +6,6 @@ before_install:
   - sudo apt-get install python3-pip
 install:
   - sudo pip3 install -r requirements.txt
-  - sudo pip3 install PIL
   #- sudo pip install .
 script:
   - sudo apt-get install -y python-logilab-common
