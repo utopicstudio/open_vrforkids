@@ -5,7 +5,7 @@ educators and learners with a single robust, secure and
 integrated system to interactive with VR learning environments.
   
 [![NPM Version][npm-image]][npm-url]
-![Build Status](https://travis-ci.org/haguilarvalenzuela/backend_vr.svg?branch=master)
+![Build Status](https://travis-ci.org/utopicstudio/open_vrforkids.svg?branch=master)
 
 ## Getting Started
 
