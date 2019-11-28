@@ -19,4 +19,3 @@ script:
   - export FLASK_ENV=development
   - cd /home/travis/build/utopicstudio/open_vrforkids/vrkids
   - python3 -m pytest -v
-  - pip3 freeze
