@@ -22,7 +22,6 @@ from pprint import pprint
 import json
 from PIL import Image
 import os
-from unipath import Path
 from flask_restful import reqparse
 from io import BytesIO
 import base64
