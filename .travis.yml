@@ -18,6 +18,6 @@ script:
   - export FLASK_APP=/home/travis/build/utopicstudio/open_vrforkids/vrkids
   - export FLASK_ENV=development
   - cd /home/travis/build/utopicstudio/open_vrforkids/vrkids
-  - python3 -m pytest -v
+  - python3 -m pytest -v --cov=tests/
 after_success:
   - coveralls
