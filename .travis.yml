@@ -5,7 +5,7 @@ python:
 before_install:
   - sudo apt-get install python3-pip
 install:
-  - sudo pip3 install -r requirements.txt
+  - sudo pip3 install -r /home/travis/build/open_vrforkids/open_vrforkids/vrkids/requirements.txt
   #- sudo pip install .
 script:
   - sudo apt-get install -y python-logilab-common
@@ -14,7 +14,7 @@ script:
   - sudo apt-get update
   - sudo apt-get install -y mongodb-org
   - sudo service mongod start
-  - export FLASK_APP=/home/travis/build/open_vrforkids
+  - export FLASK_APP=/home/travis/build/open_vrforkids/vrkids
   - export FLASK_ENV=development
-  - cd /home/travis/build/open_vrforkids/open_vrforkids
+  - cd /home/travis/build/open_vrforkids/open_vrforkids/vrkids
   - python3 -m pytest -v
