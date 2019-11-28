@@ -6,7 +6,7 @@ before_install:
   - sudo apt-get install python3-pip
   - sudo apt-get install -y python3-setuptools
 install:
-  - sudo pip3 install -r requirements.txt
+  - pip3 install -r requirements.txt
   #- sudo pip install .
 script:
   - sudo apt-get install -y python-logilab-common
