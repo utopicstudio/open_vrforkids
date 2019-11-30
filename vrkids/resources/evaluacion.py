@@ -15,5 +15,4 @@ class EvaluacionItem(Resource):
 
 class Evaluaciones(Resource):
     def get(self):
-        print(Evaluacion.objects().all().to_json())
         return json.loads(Evaluacion.objects().all().to_json())
