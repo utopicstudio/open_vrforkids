@@ -24,11 +24,17 @@ def test_get_evaluaciones(client):
 	assert False
 
 def test_get_evaluacion_id(client):
-	evaluacion = Evaluacion.objects().first()
+	evaluacion = newEvaluacion()
 	if evaluacion == None:
 		assert False
 	rv = client.get('/evaluaciones/'+str(evaluacion.id))
 	if rv._status_code == 200:
 		return True
 	assert False
+
+def newEvaluacion():
+	evaluacion = Evaluacion()
+	evaluacion.acierto = 1
+	evaluacion.save()
+	return evaluacion
 

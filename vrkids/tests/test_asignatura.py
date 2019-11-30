@@ -19,7 +19,7 @@ def client():
     os.unlink(api.app.config['DATABASE'])
 
 def test_get_asignatura(client):
-	asignatura = Asignatura.objects().first()
+	asignatura = newAsignatura()
 	if asignatura==None:
 		assert False
 	rv = client.get('/asignaturas/'+str(asignatura.id))
@@ -93,3 +93,9 @@ def test_post_asignaturas(client):
 	if rv._status_code == 200:
 		return True
 	assert False
+
+def newAsignatura():
+	asignatura = Asignatura()
+	asignatura.nombre = 'asignatura'
+	asignatura.save()
+	return asignatura
