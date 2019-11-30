@@ -14,7 +14,8 @@ from flask_restful import reqparse
 import json
 from libs.auth import token_required
 from PIL import Image
-
+from os.path import dirname, abspath
+import os
 def init_module(api):
     api.add_resource(CursoCargar, '/recursos/<id_recurso>')
     api.add_resource(CursoEvalaucionAlumno, '/recursos/<id_recurso>/respuestas')
@@ -266,11 +267,17 @@ class CursoCargar(Resource):
 
 class PreguntaImagen(Resource):    
     def get(self,id):
-        return send_file('uploads/preguntas/'+id+'_thumbnail.jpg')
+        directory_root = dirname(dirname(abspath(__file__)))
+        return send_file(os.path.join(str(directory_root),
+                                "flaskr","uploads","preguntas", str(id)+"_thumbnail.jpg"))
 
     def post(self,id):
+        
+        directory_root = dirname(dirname(abspath(__file__)))
         imagen = Image.open(request.files['imagen'].stream).convert("RGB")
-        imagen.save(os.path.join("./uploads/preguntas", str(id)+".jpg"))
+        imagen.save(os.path.join(str(directory_root),
+                                "flaskr","uploads","preguntas", str(id)+".jpg"))
         imagen.thumbnail((500, 500))
-        imagen.save(os.path.join("./uploads/preguntas", str(id)+'_thumbnail.jpg'))
-        return {'Response': '200'},404
+        imagen.save(os.path.join(str(directory_root),
+                                "flaskr","uploads","preguntas", str(id)+"_thumbnail.jpg"))
+        return {'Response': '200'},200
