@@ -10,6 +10,7 @@ import json
 from PIL import Image
 from flask_restful import reqparse
 import os
+from os.path import dirname, abspath
 from unipath import Path
 
 def init_module(api):
@@ -180,23 +181,27 @@ class ProfesoresToken(Resource):
 
 class ProfesorImagenItem(Resource):
     def post(self,id):
+        directory_root = dirname(dirname(abspath(__file__)))
         imagen = Image.open(request.files['imagen'].stream).convert("RGB")
-        imagen.save(os.path.join("./uploads/profesores", str(id)+".jpg"))
+        imagen.save(os.path.join(str(directory_root),"flaskr",
+                    "uploads","profesores", str(id)+".jpg"))
         imagen.thumbnail((200, 100))
-        imagen.save(os.path.join("./uploads/profesores", str(id)+'_thumbnail.jpg'))
+        imagen.save(os.path.join(str(directory_root),"flaskr",
+                    "uploads","profesores", str(id)+'_thumbnail.jpg'))
         profesor = Profesor.objects(id=id).first()
         profesor.imagen = str(id)
         profesor.save()
         return {'Response': 'exito'}
     
     def get(self,id):
-        upload_directory = os.path.join(current_app.config.get("UPLOAD_FOLDER", "uploads"), 
+        directory_root = dirname(dirname(abspath(__file__)))
+        upload_directory = os.path.join(str(directory_root),"flaskr",
+                        "uploads", 
                         "profesores")
 
         f = Path(os.path.join(upload_directory, "%s_thumbnail.jpg" % str(id)))
         if(f.exists()== False):
-            return send_file('uploads/profesores/default_thumbnail.jpg')
-
+            return send_file(str(os.path.join(upload_directory, "default_thumbnail.jpg")))
         image_path = os.path.join(upload_directory, "%s_thumbnail.jpg" % str(id))
         return send_file(image_path)
 
