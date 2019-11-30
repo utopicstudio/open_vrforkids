@@ -9,6 +9,7 @@ from libs.to_dict import mongo_to_dict
 from libs.auth import token_required
 import json
 from PIL import Image
+from os.path import dirname, abspath
 import os
 from flask_restful import reqparse
 from unipath import Path
@@ -44,6 +45,7 @@ class SeccionSubir(Resource):
             institucion = Institucion.objects(id=userProf.institucion.id).first()
         if institucion==None:
             return {'response': 'colegio_invalid'},404  
+        
         seccion = Seccion.objects(id=id).first()
         posicion = seccion.posicion
         seccion_anterior = Seccion.objects(institucion=institucion, activo=True, posicion=posicion-1).first()
@@ -77,6 +79,7 @@ class SeccionBajar(Resource):
         if institucion==None:
             return {'response': 'colegio_invalid'},404  
         seccion = Seccion.objects(id=id).first()
+        print(seccion.to_dict())
         posicion = seccion.posicion
         seccion_siguiente = Seccion.objects(institucion=institucion, activo=True, posicion=posicion+1).first()
         seccion.posicion = posicion+1
@@ -208,14 +211,15 @@ class SeccionesColegio(Resource):
 
 class SeccionImagenItem(Resource):
     def post(self,id):
-        upload_folder = current_app.config.get("UPLOAD_FOLDER", "uploads")
-        upload_directory = os.path.join(upload_folder, "secciones")
+        directory_root = dirname(dirname(abspath(__file__)))
         imagen = Image.open(request.files['imagen'].stream).convert("RGB")
-        image_path = os.path.join(upload_directory, "%s.jpg" % str(id))
+        image_path = os.path.join(str(directory_root),"flaskr",
+                    "uploads","secciones", str(id)+".jpg")
         imagen.save(image_path)
         imagen.thumbnail((800, 800))
 
-        image_path = os.path.join(upload_directory, "%s_thumbnail.jpg" % str(id))
+        image_path = os.path.join(str(directory_root),"flaskr",
+                    "uploads","secciones", "%s_thumbnail.jpg" % str(id))
         imagen.save(image_path)
         seccion = Seccion.objects(id=id).first()
         seccion.imagen = str(id)
@@ -223,13 +227,13 @@ class SeccionImagenItem(Resource):
         return {'Response': 'exito'}
     
     def get(self,id):
-        upload_directory = os.path.join(current_app.config.get("UPLOAD_FOLDER", "uploads"), 
-                        "secciones")
-
+        directory_root = dirname(dirname(abspath(__file__)))
+        upload_directory = os.path.join(str(directory_root),"flaskr",
+                    "uploads","secciones")
         f = Path(os.path.join(upload_directory, "%s_thumbnail.jpg" % str(id)))
         if(f.exists() == False):
-            return send_file('uploads/secciones/default_thumbnail.jpg')
-
+            return send_file(os.path.join(str(directory_root),"flaskr",
+                    "uploads","secciones", "default_thumbnail.jpg"))
         image_path = os.path.join(upload_directory, "%s_thumbnail.jpg" % str(id))
         return send_file(image_path)
 
