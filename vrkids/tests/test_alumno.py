@@ -24,7 +24,7 @@ def client():
     os.unlink(api.app.config['DATABASE'])
 
 def test_get_alumno(client):
-    alumno = Alumno.objects().first()
+    alumno = newAlumno()
     if alumno == None:
         assert False
     rv = client.get('/alumnos/'+str(alumno.id))
@@ -33,7 +33,7 @@ def test_get_alumno(client):
     assert False
 
 def test_delete_alumno(client):
-    alumno = Alumno.objects().first()
+    alumno = newAlumno()
     if alumno == None:
         assert False
     rv = client.delete('/alumnos/'+str(alumno.id))
@@ -42,7 +42,7 @@ def test_delete_alumno(client):
     assert False
 
 def test_put_alumno(client):
-    alumno = Alumno.objects().first()
+    alumno = newAlumno()
     institucion = newInstitucion()
     grado = newGrado()
     if alumno == None or institucion == None:
@@ -131,7 +131,7 @@ def test_get_alumnos_recurso(client):
 
 def test_post_alumno_recurso(client):
     curso = newCurso()
-    alumno = Alumno.objects().first()
+    alumno = newAlumno()
 
     if curso == None or alumno == None:
         assert False
@@ -142,7 +142,7 @@ def test_post_alumno_recurso(client):
     
 def test_delete_alumno_recurso(client):
     curso = newCurso()
-    alumno = Alumno.objects().first()
+    alumno = newAlumno()
     curso.alumnos = [alumno]
     curso.save()
     if curso == None or alumno == None:
@@ -225,6 +225,12 @@ def test_get_alumno_evaluaciones(client):
     if rv._status_code == 200:
         return True
     assert False
+
+def newAlumno():
+    alumno = Alumno()
+    alumno.nombres = 'nombres'
+    alumno.save()
+    return alumno
 
 def newInstitucion():
     institucion = Institucion()

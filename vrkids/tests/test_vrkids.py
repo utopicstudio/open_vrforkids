@@ -73,7 +73,7 @@ def test_post_pregunta_imagen(client):
     with api.app.app_context():
         directory_root = dirname(dirname(abspath(__file__)))
         path_img = os.path.join(str(directory_root),
-                                "flaskr","uploads","categorias","default.jpg")
+                                "flaskr","uploads","vrkids","default.jpg")
         with open(path_img, 'rb') as img_open:
             img = BytesIO(img_open.read())
             recurso = Curso.objects().first()
