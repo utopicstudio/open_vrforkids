@@ -22,10 +22,12 @@ from pprint import pprint
 import json
 from PIL import Image
 import os
+from os.path import dirname, abspath
 from flask_restful import reqparse
 from io import BytesIO
 import base64
 import re
+from unipath import Path
 
 def init_module(api):
 
@@ -1153,10 +1155,13 @@ class CursoAlumno(Resource):
 
 class CursoImagenItem(Resource):
     def post(self, id): 
+        directory_root = dirname(dirname(abspath(__file__)))
         imagen = Image.open(request.files['imagen'].stream).convert("RGB")
-        imagen.save(os.path.join("./uploads/cursos", str(id)+".jpg"))
+        imagen.save(os.path.join(str(directory_root),"flaskr",
+                    "uploads","cursos", str(id)+".jpg"))
         imagen.thumbnail((500, 500))
-        imagen.save(os.path.join("./uploads/cursos", str(id)+'_thumbnail.jpg'))
+        imagen.save(os.path.join(str(directory_root),"flaskr",
+                    "uploads","cursos", str(id)+"_thumnail.jpg"))
         curso = Curso.objects(id=id,clon_padre=None).first()
         curso.imagen = str(id)
         curso.save()
