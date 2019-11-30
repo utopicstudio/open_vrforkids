@@ -151,7 +151,6 @@ class Login(Resource):
                 user = Profesor.objects(email=email).first()
             else:
                 user = Profesor.objects(nombre_usuario=email).first()
-
         if user and user.activo and user.check_password(args.get("password")):
             recursos = []
             if tipo == 'ALUMNO':
