@@ -20,17 +20,20 @@ def client():
 def test_get_portal(client):
 	rv = client.get('/portales')
 	if rv._status_code == 200:
-		assert True
-	else:
-		assert False
+		return True
+	assert False
 
 def test_get_portal_id(client):
-	portal = Portal.objects().first()
+	portal = newPortal()
 	if(portal==None):
-		assert True
-	else:
-		rv = client.get('/portales/'+str(portal.id))
-		if rv._status_code == 200:
-			assert True
-		else:
-			assert False
+		assert False
+	rv = client.get('/portales/'+str(portal.id))
+	if rv._status_code == 200:
+		return True
+	assert False
+
+def newPortal():
+	portal = Portal()
+	portal.titulo = 'titulo'
+	portal.save()
+	return portal
