@@ -140,13 +140,7 @@ def test_post_alumno_recurso(client):
         return True
     assert False
     
-"""
-Revisión inconsistencia:
-Recurso tiene argumentos <nombre_usuario> y <id_curso>
-En el método se recibe <id_curso> y <id_alumno>
-"""
 def test_delete_alumno_recurso(client):
-    return True
     curso = newCurso()
     alumno = Alumno.objects().first()
     curso.alumnos = [alumno]
@@ -157,98 +151,80 @@ def test_delete_alumno_recurso(client):
     if rv._status_code == 200:
         return True
     assert False
-""" ================================ """
 
 def test_post_alumno_imagen(client):    
     with api.app.app_context():
         directory_root = dirname(dirname(abspath(__file__)))
         path_img = os.path.join(str(directory_root),
-                                "flaskr/uploads/categorias/default.jpg")
-        
+                                "flaskr","uploads","categorias","default.jpg")
         with open(path_img, 'rb') as img_open:
-            img = BytesIO(img_open.read())
-            
+            img = BytesIO(img_open.read()) 
             alumno = Alumno.objects().first()
             
             if alumno == None:
-                assert True
-            else:
-                data = {
-                    'imagen': (img, 'img.jpg')
-                }
-                rv = client.post('/alumno/imagen/'+str(alumno.id), content_type='multipart/form-data',data=data)
-                if rv._status_code == 200:
-                    assert True
-                else:
-                    assert False
+                assert False
+            data = {
+                'imagen': (img, 'img.jpg')
+            }
+            rv = client.post('/alumno/imagen/'+str(alumno.id), content_type='multipart/form-data',data=data)
+            if rv._status_code == 200:
+                return True
+            assert False
 
 def test_get_alumno_imagen(client):
-
     alumno = Alumno.objects().first()
     if alumno == None:
-        assert True
-    else:
-        rv = client.get('/alumno/imagen/'+str(alumno.id))
-        if rv._status_code == 200:
-            assert True
-        else:
-            assert False
+        assert False
+    rv = client.get('/alumno/imagen/'+str(alumno.id))
+    if rv._status_code == 200:
+        return True
+    assert False
 
 def test_get_alumno_imagen_default(client):
     alumno = Alumno.objects().first()
     if alumno == None:
-        assert True
-    else:
-        rv = client.get('/alumno/imagen/default/'+str(alumno.id))
-        if rv._status_code == 200:
-            assert True
-        else:
-            assert False
+        assert False
+    rv = client.get('/alumno/imagen/default/'+str(alumno.id))
+    if rv._status_code == 200:
+        return True
+    assert False
 
 def test_get_alumnos_curso(client):
     curso = Grado.objects().first()
     if curso == None:
-        assert True
-    else:
-        rv = client.get('/alumnos/curso/'+str(curso.id))
-        if rv._status_code == 200:
-            assert True
-        else:
-            assert False
+        assert False
+    rv = client.get('/alumnos/curso/'+str(curso.id))
+    if rv._status_code == 200:
+        return True
+    assert False
 
 
 def test_get_alumno_imagen_zoom(client):
     alumno = Alumno.objects().first()
     if alumno == None:
-        assert True
-    else:
-        rv = client.get('/imagen/zoom/'+str(alumno.id))
-        if rv._status_code == 200:
-            assert True
-        else:
-            assert False
+        assert False
+    rv = client.get('/imagen/zoom/'+str(alumno.id))
+    if rv._status_code == 200:
+        return True
+    assert False
 
 def test_get_finalizar_tutorial(client):
     alumno = Alumno.objects().first()
     if alumno == None:
-        assert True
-    else:
-        rv = client.get('/alumno/finalizar/tutorial/'+str(alumno.id))
-        if rv._status_code == 200:
-            assert True
-        else:
-            assert False
+        assert False
+    rv = client.get('/alumno/finalizar/tutorial/'+str(alumno.id))
+    if rv._status_code == 200:
+        return True
+    assert False
 
 def test_get_alumno_evaluaciones(client):
     alumno = Alumno.objects().first()
     if alumno == None:
-        assert True
-    else:
-        rv = client.get('/alumno/evaluaciones/'+str(alumno.id))
-        if rv._status_code == 200:
-            assert True
-        else:
-            assert False
+        assert False
+    rv = client.get('/alumno/evaluaciones/'+str(alumno.id))
+    if rv._status_code == 200:
+        return True
+    assert False
 
 def newInstitucion():
     institucion = Institucion()

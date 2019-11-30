@@ -176,7 +176,6 @@ class AlumnoCurso(Resource):
 
     def delete(self, id_curso, nombre_usuario):
         alumno = Alumno.objects(nombre_usuario= nombre_usuario).first()
-        print(alumno.to_dict())
         alumnos = []
         curso = Curso.objects(id=id_curso,clon_padre=None).first()
         for alumno_curso in curso.alumnos:
