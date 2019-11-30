@@ -33,7 +33,7 @@ def test_get_alumno(client):
     assert False
 
 def test_delete_alumno(client):
-    alumno = newAlumno()
+    alumno = Alumno.objects().first()
     if alumno == None:
         assert False
     rv = client.delete('/alumnos/'+str(alumno.id))
@@ -42,7 +42,7 @@ def test_delete_alumno(client):
     assert False
 
 def test_put_alumno(client):
-    alumno = newAlumno()
+    alumno = Alumno.objects().first()
     institucion = newInstitucion()
     grado = newGrado()
     if alumno == None or institucion == None:
@@ -131,7 +131,7 @@ def test_get_alumnos_recurso(client):
 
 def test_post_alumno_recurso(client):
     curso = newCurso()
-    alumno = newAlumno()
+    alumno = Alumno.objects().first()
 
     if curso == None or alumno == None:
         assert False
@@ -142,7 +142,7 @@ def test_post_alumno_recurso(client):
     
 def test_delete_alumno_recurso(client):
     curso = newCurso()
-    alumno = newAlumno()
+    alumno = Alumno.objects().first()
     curso.alumnos = [alumno]
     curso.save()
     if curso == None or alumno == None:
@@ -227,8 +227,9 @@ def test_get_alumno_evaluaciones(client):
     assert False
 
 def newAlumno():
+    now = datetime.now()
     alumno = Alumno()
-    alumno.nombres = 'nombres'
+    alumno.nombres = 'nombres '+now.strftime("%m/%d/%Y, %H:%M:%S")
     alumno.save()
     return alumno
 
