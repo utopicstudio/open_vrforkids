@@ -174,13 +174,13 @@ class AlumnoCurso(Resource):
         curso.save()
         return {'Response': 'exito'}
 
-    def delete(self, id_curso, id_alumno):
-        idAlumno = ObjectId(id_alumno)
+    def delete(self, id_curso, nombre_usuario):
+        alumno = Alumno.objects(nombre_usuario= nombre_usuario).first()
+        print(alumno.to_dict())
         alumnos = []
         curso = Curso.objects(id=id_curso,clon_padre=None).first()
-        
-        for alumno in curso.alumnos:
-            if(idAlumno != alumno.id):
+        for alumno_curso in curso.alumnos:
+            if(alumno.id != alumno_curso.id):
                 alumnos.append(alumno.id)
 
         response = Curso.objects(id=id_curso,clon_padre=None).update(
@@ -204,8 +204,7 @@ class Alumnos(Resource):
         alumno.encrypt_password(data['data_academico']['nombre_usuario'])
         alumno.matricula = data['data_academico']['matricula']
         alumno.institucion = None
-        grado = Grado.objects().first()
-        alumno.grado = grado
+        alumno.grado = Grado.objects(id = data['data_personal']['grado']).first()
         alumno.save()
         return {'Response': 'exito', 'id': str(alumno.id)}
 

@@ -20,7 +20,6 @@ def test_post_login(client):
 	with api.app.app_context():
 		data = dict(tipo='ADMINISTRADOR', email='admin@admin.cl', password='pass')
 		data = json.dumps(data)
-		#data = data.encode()
 		rv = client.post('/login',content_type='application/json', data=data)
 		print(rv._status_code)
 		if rv._status_code == 200 or rv._status_code == 401:

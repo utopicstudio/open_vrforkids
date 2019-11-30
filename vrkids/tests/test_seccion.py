@@ -97,11 +97,10 @@ def test_get_seccion_imagen_original(client):
 
 def test_get_seccion_imagen_default(client):
 	seccion = Seccion.objects().first()
-	if seccion == None:
-		assert True
-	else:
+	if seccion:
 		rv = client.get('/seccion/imagen/default/'+str(seccion.id))
 		if rv._status_code == 200:
 			assert True
 		else:
 			assert False
+	assert True
