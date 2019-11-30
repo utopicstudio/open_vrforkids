@@ -5,6 +5,7 @@ from libs.to_dict import mongo_to_dict
 import json
 from PIL import Image
 import os
+from os.path import dirname, abspath
 from unipath import Path
 def init_module(api):
     api.add_resource(InstitucionItem, '/instituciones/<id>')
@@ -19,7 +20,6 @@ class InstitucionItem(Resource):
 
 class Instituciones(Resource):
     def get(self):
-        print(Institucion.objects().all().to_json())
         return json.loads(Institucion.objects().all().to_json())
 
 class InstitucionIdentificador(Resource):
@@ -35,7 +35,8 @@ class InstitucionIdentificador(Resource):
 
 class InstitucionImagenItem(Resource):
     def post(self,id):
-        upload_directory = os.path.join(current_app.config.get("UPLOAD_FOLDER", "uploads"), 
+        directory_root = dirname(dirname(abspath(__file__)))
+        upload_directory = os.path.join(directory_root, "flaskr", "uploads", 
                                         "instituciones")
         imagen = Image.open(request.files['imagen'].stream).convert("RGB")
         image_path = os.path.join(upload_directory, "%s.jpg" % str(id))
@@ -50,8 +51,9 @@ class InstitucionImagenItem(Resource):
         return {'Response': 'exito'}
     
     def get(self,id):
-        upload_directory = os.path.join(current_app.config.get("UPLOAD_FOLDER", "uploads"), 
-                        "instituciones")
+        directory_root = dirname(dirname(abspath(__file__)))
+        upload_directory = os.path.join(directory_root, "flaskr", "uploads", 
+                                        "instituciones")
 
         f = Path(os.path.join(upload_directory, "%s_thumbnail.jpg" % str(id)))
         if(f.exists()== False):

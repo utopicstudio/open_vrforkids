@@ -1,4 +1,4 @@
-import os
+import os, shutil
 import tempfile
 import json
 import pytest
@@ -22,73 +22,66 @@ def client():
 def test_get_institucion_item(client):
 	institucion = Institucion.objects().first()
 	if institucion == None:
-		assert True
-	else:
-		rv = client.get('/instituciones/'+str(institucion.id))
-		if rv._status_code == 200:
-			assert True
-		else:
-			assert False
+		assert False
+	rv = client.get('/instituciones/'+str(institucion.id))
+	if rv._status_code == 200:
+		return True
+	assert False
 
 def test_get_instituciones(client):
 	rv = client.get('/instituciones')
 	if rv._status_code == 200:
-		assert True
-	else:
-		assert False
+		return True
+	assert False
 
 def test_get_institucion_identificador(client):
-	institucion = Institucion.objects().first()
+	institucion = setIdentificador()
 	if institucion == None:
-		assert True
-	else:
-		rv = client.get('/institucion/identificador/'+institucion.identificador)
-		if rv._status_code == 200:
-			assert True
-		else:
-			assert False
+		assert False
+	rv = client.get('/institucion/identificador/'+institucion.identificador)
+	if rv._status_code == 200:
+		return True
+	assert False
 
 def test_post_institucion_imagen(client):
 	with api.app.app_context():
-
 		institucion = Institucion.objects().first()
 		if institucion == None:
-			assert True
-		else:
-			directory_root = dirname(dirname(abspath(__file__)))
-			path_img = os.path.join(str(directory_root),
-			                        "flaskr/uploads/categorias/default.jpg")
-        	
-			with open(path_img, 'rb') as img_open:
-				img = BytesIO(img_open.read())
-				data = {
-					'imagen': (img, 'img.jpg')
-				}
-				rv = client.post('/institucion/imagen/'+str(institucion.id),
-				                 content_type='multipart/form-data', data=data)
-				if rv._status_code == 200:
-					assert True
-				else:
-					assert False
+			assert False
+		directory_root = dirname(dirname(abspath(__file__)))
+		path_img = os.path.join(str(directory_root),
+								"flaskr","uploads","instituciones","default.jpg")		
+		with open(path_img, 'rb') as img_open:
+			img = BytesIO(img_open.read())
+			data = {
+				'imagen': (img, 'img.jpg')
+			}
+			rv = client.post('/institucion/imagen/'+str(institucion.id),
+								content_type='multipart/form-data', data=data)
+			if rv._status_code == 200:
+				return True
+			assert False
 
 def test_get_institucion_imagen(client):
 	institucion = Institucion.objects().first()
 	if institucion == None:
-		assert True
-	else:
-		rv = client.get('/institucion/imagen/'+str(institucion.id))
-		if rv._status_code == 200:
-			assert True
-		else:
-			assert False
+		assert False	
+	rv = client.get('/institucion/imagen/'+str(institucion.id))
+	if rv._status_code == 200:
+		return True
+	assert False
 
 def test_get_institucion_imagen_default(client):
 	institucion = Institucion.objects().first()
 	if institucion == None:
-		assert True
-	else:
-		rv = client.get('/institucion/imagen/default/'+str(institucion.id))
-		if rv._status_code == 200:
-			assert True
-		else:
-			assert False
+		assert False
+	rv = client.get('/institucion/imagen/default/'+str(institucion.id))
+	if rv._status_code == 200:
+		return True
+	assert False
+
+def setIdentificador():
+	institucion = Institucion.objects().first()
+	institucion.identificador = 'identificador'
+	institucion.save()
+	return institucion
