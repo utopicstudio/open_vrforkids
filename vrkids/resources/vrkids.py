@@ -273,7 +273,7 @@ class PreguntaImagen(Resource):
                                         "preguntas")
         f = Path(os.path.join(upload_directory, "%s_thumbnail.jpg" % str(id)))
         if(f.exists()== False):
-            return send_file( os.path.join(upload_directory, "default_thumbnail.jpg"))
+            return send_file( os.path.join(upload_directory, "default.jpg"))
 
         image_path = os.path.join(upload_directory, "%s_thumbnail.jpg" % str(id))
         return send_file(image_path)
