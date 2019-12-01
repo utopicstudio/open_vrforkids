@@ -57,18 +57,7 @@ def test_put_curso_evaluacion_alumno(client):
         if rv._status_code == 200:
             return True
         assert False
-                
-def test_get_pregunta_imagen(client):
-    recurso = Curso.objects().first()
-    if recurso == None:
-        assert True
-    else:
-        rv = client.get('/preguntas/'+str(recurso.id))
-        if rv._status_code == 200:
-            assert True
-        else:
-            assert False
-
+        
 def test_post_pregunta_imagen(client):
     with api.app.app_context():
         directory_root = dirname(dirname(abspath(__file__)))
@@ -86,6 +75,18 @@ def test_post_pregunta_imagen(client):
             if rv._status_code == 200:
                 return True
             assert False
+                
+def test_get_pregunta_imagen(client):
+    recurso = Curso.objects().first()
+    if recurso == None:
+        assert True
+    else:
+        rv = client.get('/preguntas/'+str(recurso.id))
+        if rv._status_code == 200:
+            assert True
+        else:
+            assert False
+
 
 def setInstitucion():
 	institucion = Institucion()
