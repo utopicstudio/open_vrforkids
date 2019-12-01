@@ -16,6 +16,7 @@ from libs.auth import token_required
 from PIL import Image
 from os.path import dirname, abspath
 import os
+from unipath import Path
 def init_module(api):
     api.add_resource(CursoCargar, '/recursos/<id_recurso>')
     api.add_resource(CursoEvalaucionAlumno, '/recursos/<id_recurso>/respuestas')
@@ -268,16 +269,22 @@ class CursoCargar(Resource):
 class PreguntaImagen(Resource):    
     def get(self,id):
         directory_root = dirname(dirname(abspath(__file__)))
-        return send_file(os.path.join(str(directory_root),
-                                "flaskr","uploads","preguntas", str(id)+"_thumbnail.jpg"))
+        upload_directory = os.path.join(directory_root, "flaskr", "uploads", 
+                                        "preguntas")
+        f = Path(os.path.join(upload_directory, "%s_thumbnail.jpg" % str(id)))
+        if(f.exists()== False):
+            return send_file( os.path.join(upload_directory, "default_thumbnail.jpg"))
+
+        image_path = os.path.join(upload_directory, "%s_thumbnail.jpg" % str(id))
+        return send_file(image_path)
 
     def post(self,id):
-        
         directory_root = dirname(dirname(abspath(__file__)))
+        upload_directory = os.path.join(directory_root, "flaskr", "uploads", 
+                                        "preguntas")
         imagen = Image.open(request.files['imagen'].stream).convert("RGB")
-        imagen.save(os.path.join(str(directory_root),
-                                "flaskr","uploads","preguntas", str(id)+".jpg"))
+        image_path = os.path.join(upload_directory, "%s.jpg" % str(id))
+        imagen.save(image_path)
         imagen.thumbnail((500, 500))
-        imagen.save(os.path.join(str(directory_root),
-                                "flaskr","uploads","preguntas", str(id)+"_thumbnail.jpg"))
+        image_path = os.path.join(upload_directory, "%s_thumbnail.jpg" % str(id))
         return {'Response': '200'},200
