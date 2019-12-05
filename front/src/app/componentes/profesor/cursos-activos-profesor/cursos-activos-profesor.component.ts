@@ -176,4 +176,8 @@ export class CursosActivosProfesorComponent implements OnInit {
     })
   }
 
+  jugarRecurso(id:string, id_curso_base:string){
+    window.open(Config.API_PREVIEW_PROFESOR+"/"+id_curso_base+"/?token="+this.token+"&resource="+id, "_blank")
+  }
+
 }
