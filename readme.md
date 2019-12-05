@@ -61,3 +61,8 @@ In file `config.ts` located in `/front/src/app/congif.ts` you can change the URL
 To deploy the application access the url https://angular.io/guide/deployment
 ### API REST
 In file `config.cfg` located in `/vrkids` you can change the different value used for the API REST.
+
+## Login Data
+To login to the platform as administrator the credentials are:
+1. email: `admin@admin.cl`
+2. password: `pass`
