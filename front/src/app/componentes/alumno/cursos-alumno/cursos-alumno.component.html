@@ -49,7 +49,6 @@
                         <th scope="col">Nombre</th>
                         <th scope="col">Profesor</th>
                         <th scope="col">Asignatura</th>
-                        <th scope="col">Creacion</th>
                         <th scope="col">Activo</th>
                         <th scope="col">Acción</th>
                       </tr>
@@ -61,7 +60,6 @@
                         <td>{{ curso.profesor.nombres}} {{ curso.profesor.apellido_paterno}}
                           {{ curso.profesor.apellido_materno}}</td>
                         <td>{{ curso.asignatura.nombre}}</td>
-                        <td>{{ curso.fecha_creacion}}</td>
                         <td>
                           <div *ngIf="!curso.activo">
                             <div class="icon icon-shape bg-gradient-danger rounded-circle text-white mb-1">
@@ -75,9 +73,11 @@
                           </div>
                         </td>
                         <td>
-                          <!--<button [disabled]="verificarJugar(curso)" type="button" class="btn btn-success btn-sm" (click)="ver_detalle_curso(curso)">
-                                <i class="fas fa-gamepad"></i>
-                            </button>-->
+                          <button data-toggle="tooltip" data-placement="top" title="Jugar recurso"
+                            [disabled]="verificarJugar(curso)" type="button" class="btn btn-success btn-sm"
+                            (click)="jugarRecurso(curso.id,curso.curso_base.id)">
+                            <i class="fas fa-gamepad"></i>
+                          </button>
                           <button type="button" class="btn btn-info btn-sm" (click)="ver_detalle_curso(curso)"><i
                               class="far fa-eye"></i></button></td>
                       </tr>

@@ -182,12 +182,16 @@ export class CursosAlumnoComponent implements OnInit {
   }
 
   verificarJugar(curso:Curso):boolean{
-    for(let evaluacion of this.evaluaciones){
-      if(evaluacion.curso['id']==curso['id']){
-        return true
+    for(let evaluacion of this.evaluaciones) {
+      if(evaluacion['recurso']== curso.id) {
+        return true;
       }
     }
     return false
+  }
+
+  jugarRecurso(id:string, id_curso_base:string){
+    window.open(Config.API_PREVIEW_PROFESOR+"/"+id_curso_base+"/?token="+this.token+"&resource="+id, "_blank")
   }
 
   getEvaluaciones(){
