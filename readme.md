@@ -55,8 +55,6 @@ npm start
 4. Open your browser at http://localhost:4200
 
 ## Project setting
-### API REST
-
 ### Angular Project
 In file `config.ts` located in `/front/src/app/congif.ts` you can change the URL used by the API REST.
 #### Deployment applicatiton
