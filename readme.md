@@ -34,9 +34,10 @@ install typescript with:
 npm install -g typescript
 ```
 
-## Run the project
+## Run the project development mode
 ### Run the API REST
-Open a new terminal and access to `/vrkids` folder and run with:
+1. Rename the file `config.cfg.template` located in `/vrkids` for `config.cfg`.
+2. Open a new terminal and access to `/vrkids` folder and run with:
 ```
 python api.py
 ```
@@ -53,4 +54,12 @@ npm start
 ```
 4. Open your browser at http://localhost:4200
 
+## Project setting
+### API REST
 
+### Angular Project
+In file `config.ts` located in `/front/src/app/congif.ts` you can change the URL used by the API REST.
+#### Deployment applicatiton
+To deploy the application access the url https://angular.io/guide/deployment
+### API REST
+In file `config.cfg` located in `/vrkids` you can change the different value used for the API REST.
