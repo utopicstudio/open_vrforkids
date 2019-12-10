@@ -36,8 +36,9 @@ npm install -g typescript
 
 ## Run the project development mode
 ### Run the API REST
-1. Rename the file `config.cfg.template` located in `/vrkids` for `config.cfg`.
-2. Open a new terminal and access to `/vrkids` folder and run with:
+1. Create your config file for the API service. Create a copy of the configuration file `config.cfg.template`located in `/vrkids` with the name `config.cfg`
+2. Customize your options by editing the file `config.cfg` (database name, database pass, secret salt, etc).
+3. Open a new terminal and access to `/vrkids` folder and run with:
 ```
 python api.py
 ```
