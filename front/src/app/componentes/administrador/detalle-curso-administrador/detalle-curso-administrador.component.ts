@@ -242,7 +242,7 @@ export class DetalleCursoAdministradorComponent implements OnInit {
 
 
     Swal.fire({
-      title: 'Alternativas Pregunta '+numero_pregunta,
+      title: 'Opciones Pregunta '+numero_pregunta,
       type: 'info',
       html: html,
       confirmButtonColor: '#2dce89',
