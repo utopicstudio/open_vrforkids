@@ -14,9 +14,7 @@ from flask_restful import reqparse
 import json
 from libs.auth import token_required
 from PIL import Image
-from os.path import dirname, abspath
-import os
-from unipath import Path
+
 def init_module(api):
     api.add_resource(CursoCargar, '/recursos/<id_recurso>')
     api.add_resource(CursoEvalaucionAlumno, '/recursos/<id_recurso>/respuestas')
@@ -61,12 +59,10 @@ class CursoEvalaucionAlumno(Resource):
         if len(data) == 0:
             return {'response': 'no answers'}, 404
         respuestas = data
-
         evaluacion = Evaluacion.objects(alumno=user, curso=curso).first()
         if evaluacion != None:
             evaluacion.respuestas = []
             evaluacion.acierto = 0
-            
             evaluacion.save()
         if not evaluacion:
             evaluacion = Evaluacion()
@@ -88,27 +84,31 @@ class CursoEvalaucionAlumno(Resource):
         #GUARDO LAS RESPUESTAS ENVIADAS PARA CADA PREGUNTA A PARTIR DE SU INDICE
         for respuesta in respuestas:
             for respuesta_ordenada in respuestas_ordenadas:
-                if respuesta['indice_pregunta'] == respuesta_ordenada['indice_pregunta']:
+                if (respuesta['id_contenido'] == respuesta_ordenada['indice_contenido']) and (respuesta['indice_pregunta'] == respuesta_ordenada['indice_pregunta']):
                     respuesta_ordenada['respuestas_enviadas'].append(respuesta)
-
 
         for respuestas_pregunta in respuestas_ordenadas:
             #EN ESTE PUNTO ESTAMOS VIENDO UNA PREGUNTA EN PARTICULAR
+
             # VARIABLE QUE CERTIFICA QUE LA PREGUNTA ES CORRECTA, POR DEFECTO SI ES CORRECTA
             correcta= True
+
             # SE CREA LA RESPUESTA QUE SERA ANNADIDA A LA EVALUACION
             respuesta_aux = Respuesta()
+
             for contenido in curso.contenidos:
                 if respuestas_pregunta['indice_contenido'] == contenido.identificador:
                     respuesta_aux.indice_contenido = respuestas_pregunta['indice_contenido']
                     for pregunta in contenido.preguntas:
                         #ACCEDIMOS A LA PREGUNTA
                         if respuestas_pregunta['indice_pregunta'] == pregunta.indice:
+
                             #CASO PREGUNTAS DE TIPO TEXTO
                             if pregunta.tipo_pregunta == "TEXTO":
                                 respuesta_aux.indice_pregunta = pregunta.indice
                                 respuesta_aux.opciones = []
                                 evaluacion.respuestas.append(respuesta_aux)
+
                             #CASO PREGUNTAS DE TIPO ALTERNATIVA
                             if pregunta.tipo_pregunta == "ALTERNATIVA":
                                 #RECORRER LAS OPCIONES ENVIADAS
@@ -135,7 +135,7 @@ class CursoEvalaucionAlumno(Resource):
                             if pregunta.tipo_pregunta == "VERDADERO_FALSO":
                                 #RECORRER LAS OPCIONES ENVIADAS
                                 for respuesta_enviada in respuestas_pregunta['respuestas_enviadas']:
-                                    #POR CADA OPCION SE TIENE QUE CREAR UNA RESPUESTA OPCION Y VERIFICAR SI SE FALLÓ
+                                    #POR CADA OPCION SE TIENE QUE CREAR UNA RESPUESTAOPCION Y VERIFICAR SI SE FALLÓ
                                     #SETEAR CORECTA A FALSO
                                     #RECORRER LAS ALTERNATIVAS
                                     respuesta_opcion = RespuestaOpcion()
@@ -268,23 +268,11 @@ class CursoCargar(Resource):
 
 class PreguntaImagen(Resource):    
     def get(self,id):
-        directory_root = dirname(dirname(abspath(__file__)))
-        upload_directory = os.path.join(directory_root, "flaskr", "uploads", 
-                                        "preguntas")
-        f = Path(os.path.join(upload_directory, "%s_thumbnail.jpg" % str(id)))
-        if(f.exists()== False):
-            return send_file( os.path.join(upload_directory, "default.jpg"))
-
-        image_path = os.path.join(upload_directory, "%s_thumbnail.jpg" % str(id))
-        return send_file(image_path)
+        return send_file('uploads/preguntas/'+id+'_thumbnail.jpg')
 
     def post(self,id):
-        directory_root = dirname(dirname(abspath(__file__)))
-        upload_directory = os.path.join(directory_root, "flaskr", "uploads", 
-                                        "preguntas")
         imagen = Image.open(request.files['imagen'].stream).convert("RGB")
-        image_path = os.path.join(upload_directory, "%s.jpg" % str(id))
-        imagen.save(image_path)
+        imagen.save(os.path.join("./uploads/preguntas", str(id)+".jpg"))
         imagen.thumbnail((500, 500))
-        image_path = os.path.join(upload_directory, "%s_thumbnail.jpg" % str(id))
-        return {'Response': '200'},200
+        imagen.save(os.path.join("./uploads/preguntas", str(id)+'_thumbnail.jpg'))
+        return {'Response': '200'},404
