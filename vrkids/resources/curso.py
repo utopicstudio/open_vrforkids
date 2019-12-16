@@ -719,10 +719,11 @@ class CursoDetalleAlumno(Resource):
             for contenido in curso.contenidos:
                 for pregunta in contenido.preguntas:
                     for respuesta_aux in evaluacion.respuestas:
-                        if respuesta_aux.indice_pregunta == pregunta.indice:
+                        if respuesta_aux.indice_pregunta == pregunta.indice and respuesta_aux.indice_contenido == contenido.identificador:
                             respuesta_aux = respuesta_aux.to_dict()
                             respuesta_aux['pregunta'] = pregunta.texto
                             respuesta_aux['tipo_pregunta'] = pregunta.tipo_pregunta
+                            respuesta_aux['indice_pregunta'] = int(respuesta_aux['indice_pregunta']) + 1
                             respuestas_alumno.append(respuesta_aux)
 
 
@@ -735,7 +736,7 @@ class CursoDetalleAlumno(Resource):
                             if pregunta['habilidad'].id == habilidad_respuesta.id:
                                 preguntas_habilidad = preguntas_habilidad+1
                                 for respuesta_aux in evaluacion.respuestas:
-                                    if respuesta_aux.indice_pregunta == pregunta.indice:
+                                    if respuesta_aux.indice_pregunta == pregunta.indice and respuesta_aux.indice_contenido == contenido.identificador:
                                         if respuesta_aux.correcta:
                                             respuestas_correctas_habilidad = respuestas_correctas_habilidad +1
 
@@ -745,7 +746,7 @@ class CursoDetalleAlumno(Resource):
                         'habilidad': habilidad_respuesta['nombre']
                     }
                 )
-            respuestas_alumno = Respuesta.sort_respuestas(respuestas_alumno)
+            #respuestas_alumno = Respuesta.sort_respuestas(respuestas_alumno)
             
 
             alumno['evaluacion'] = True
@@ -772,6 +773,7 @@ class CursoDetalleAlumno(Resource):
                 "curso": curso.to_dict(),
                 "alumno": alumno
             }
+
 
 
 class CursosAsignaturaGrafico(Resource):
