@@ -87,7 +87,6 @@
                         <table class="table table-striped">
                           <thead>
                             <tr>
-                              <th scope="col">Número</th>
                               <th scope="col">Tipo Pregunta</th>
                               <th scope="col">Pregunta</th>
                               <th scope="col">Correcta</th>
@@ -95,7 +94,6 @@
                           </thead>
                           <tbody>
                             <tr *ngFor="let respuesta of respuestas_tabla">
-                              <th>{{respuesta.indice_pregunta}}</th>
                               <th>
                                 <span class="badge badge-pill badge-secondary" *ngIf="respuesta.tipo_pregunta=='TEXTO'">TEXTO</span>
                                 <span class="badge badge-pill badge-secondary" *ngIf="respuesta.tipo_pregunta=='ALTERNATIVA'">ALTERNATIVA</span>
