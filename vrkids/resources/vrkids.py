@@ -14,11 +14,12 @@ from flask_restful import reqparse
 import json
 from libs.auth import token_required
 from PIL import Image
+import os
 
 def init_module(api):
     api.add_resource(CursoCargar, '/recursos/<id_recurso>')
     api.add_resource(CursoEvalaucionAlumno, '/recursos/<id_recurso>/respuestas')
-    api.add_resource(PreguntaImagen, '/preguntas/<id>')
+    api.add_resource(PreguntaImagen, '/preguntas/<_id>')
 
 class CursoEvalaucionAlumno(Resource):
     def __init__(self):
@@ -71,25 +72,36 @@ class CursoEvalaucionAlumno(Resource):
         evaluacion.curso = curso.id
         cantidad_correcta = 0
         acierto = 0
+        
         #DETERMINAR LA VARIABLE QUE ALMACENARA LAS OPCIONES DE CADA PREGUNTA VALIDA
         respuestas_ordenadas = []
         for contenido in curso.contenidos:
             for pregunta in contenido.preguntas:
-                respuestas_ordenadas.append({
-                    "indice_pregunta":pregunta.indice,
-                    "indice_contenido": contenido.identificador,
-                    "respuestas_enviadas":[]
-                })
+                if pregunta.tipo_pregunta != "TEXTO":
+                    respuestas_ordenadas.append({
+                        "indice_pregunta":pregunta.indice,
+                        "indice_contenido": contenido.identificador,
+                        "respuestas_enviadas":[]
+                    })
 
         #GUARDO LAS RESPUESTAS ENVIADAS PARA CADA PREGUNTA A PARTIR DE SU INDICE
         for respuesta in respuestas:
             for respuesta_ordenada in respuestas_ordenadas:
-                if (respuesta['id_contenido'] == respuesta_ordenada['indice_contenido']) and (respuesta['indice_pregunta'] == respuesta_ordenada['indice_pregunta']):
+                if (int(respuesta['id_contenido']) == int(respuesta_ordenada['indice_contenido'])) and ( int(respuesta['indice_pregunta']) == int(respuesta_ordenada['indice_pregunta'])):
                     respuesta_ordenada['respuestas_enviadas'].append(respuesta)
+
+        #ASEGURARSE DE QUE SE ENVIARON RESPUESTAS PARA TODAS LAS PREGUNTAS EN CASO CONTRARIO RESPONDER FALLO
+        for respuesta_ordenada in respuestas_ordenadas:
+            for contenido in curso.contenidos:
+                if contenido.identificador == respuesta_ordenada['indice_contenido']:
+                    for pregunta in contenido.preguntas:
+                        if pregunta.indice == respuesta_ordenada['indice_pregunta']:
+                            if pregunta.tipo_pregunta != "TEXTO":
+                                if len(respuesta_ordenada['respuestas_enviadas']) == 0:
+                                    return {'response': 'answers invalid'}, 404
 
         for respuestas_pregunta in respuestas_ordenadas:
             #EN ESTE PUNTO ESTAMOS VIENDO UNA PREGUNTA EN PARTICULAR
-
             # VARIABLE QUE CERTIFICA QUE LA PREGUNTA ES CORRECTA, POR DEFECTO SI ES CORRECTA
             correcta= True
 
@@ -97,11 +109,11 @@ class CursoEvalaucionAlumno(Resource):
             respuesta_aux = Respuesta()
 
             for contenido in curso.contenidos:
-                if respuestas_pregunta['indice_contenido'] == contenido.identificador:
-                    respuesta_aux.indice_contenido = respuestas_pregunta['indice_contenido']
+                if int(respuestas_pregunta['indice_contenido']) == int(contenido.identificador):
+                    respuesta_aux.indice_contenido = int(respuestas_pregunta['indice_contenido'])
                     for pregunta in contenido.preguntas:
                         #ACCEDIMOS A LA PREGUNTA
-                        if respuestas_pregunta['indice_pregunta'] == pregunta.indice:
+                        if int(respuestas_pregunta['indice_pregunta']) == int(pregunta.indice):
 
                             #CASO PREGUNTAS DE TIPO TEXTO
                             if pregunta.tipo_pregunta == "TEXTO":
@@ -113,7 +125,7 @@ class CursoEvalaucionAlumno(Resource):
                             if pregunta.tipo_pregunta == "ALTERNATIVA":
                                 #RECORRER LAS OPCIONES ENVIADAS
                                 for respuesta_enviada in respuestas_pregunta['respuestas_enviadas']:
-                                    if respuesta_enviada['respuesta']:
+                                    if respuesta_enviada['respuesta'] == "True":
                                         #VERIFICAR QUE ES LA CORRECTA O NO
                                         for alternativa in pregunta.alternativas:
                                             if alternativa.correcta:
@@ -122,7 +134,7 @@ class CursoEvalaucionAlumno(Resource):
                                                     correcta = False
                                                 # SE TIENE QUE GUARDAR LA OPCION DE LA RESPUESTA
                                                 respuesta_opcion = RespuestaOpcion()
-                                                respuesta_opcion.numero_opcion = alternativa.numero_alternativa
+                                                respuesta_opcion.numero_opcion = int(respuesta_enviada['indice_opcion'])
                                                 respuesta_opcion.correcta = correcta
                                                 respuesta_opcion.data = str(respuesta_enviada['respuesta'])
                                                 respuesta_aux.opciones.append(respuesta_opcion) 
@@ -141,13 +153,13 @@ class CursoEvalaucionAlumno(Resource):
                                     respuesta_opcion = RespuestaOpcion()
                                     correcta_opcion = False
                                     for alternativa in pregunta.alternativas:
-                                        if alternativa.numero_alternativa == respuesta_enviada['indice_opcion']:
-                                            if alternativa.correcta == respuesta_enviada['respuesta']:
+                                        if alternativa.numero_alternativa == int(respuesta_enviada['indice_opcion']):
+                                            if str(alternativa.correcta) == str(respuesta_enviada['respuesta']):
                                                 correcta_opcion = True
                                             else:
                                                 correcta_opcion = False
                                                 correcta = False
-                                    respuesta_opcion.numero_opcion = respuesta_enviada['indice_opcion']
+                                    respuesta_opcion.numero_opcion = int(respuesta_enviada['indice_opcion'])
                                     respuesta_opcion.data = str(respuesta_enviada['respuesta'])
                                     respuesta_opcion.correcta = correcta_opcion
                                     respuesta_aux.opciones.append(respuesta_opcion)
@@ -161,7 +173,7 @@ class CursoEvalaucionAlumno(Resource):
                             if pregunta.tipo_pregunta == "UNIR_IMAGENES" or pregunta.tipo_pregunta == "UNIR_TEXTOS" or pregunta.tipo_pregunta == "UNIR_IMAGEN_TEXTO":
                                 for respuesta_enviada in respuestas_pregunta['respuestas_enviadas']:
                                     respuesta_opcion = RespuestaOpcion()
-                                    if respuesta_enviada['respuesta'] == respuesta_enviada['indice_opcion']:
+                                    if int(respuesta_enviada['respuesta']) == int(respuesta_enviada['indice_opcion']):
                                         correcta = True
                                     else:
                                         correcta = False
@@ -179,13 +191,10 @@ class CursoEvalaucionAlumno(Resource):
 
         if len(respuestas_ordenadas)>0:
             cantidad_preguntas = 0
-            for respuesta in respuestas_ordenadas:
-                for contenido in curso.contenidos:
-                    if contenido.identificador == respuesta['indice_contenido']:
-                        for pregunta in contenido.preguntas:
-                            if pregunta.indice == respuesta['indice_pregunta']:
-                                if pregunta.tipo_pregunta != "TEXTO":
-                                    cantidad_preguntas = cantidad_preguntas +1
+            for contenido in curso.contenidos:
+                for pregunta in contenido.preguntas:
+                    if pregunta.tipo_pregunta != "TEXTO":
+                        cantidad_preguntas = cantidad_preguntas +1
             if cantidad_preguntas == 0:
                 acierto = 0
             else:
@@ -197,7 +206,8 @@ class CursoEvalaucionAlumno(Resource):
         #ACTUALIZAR LA APROBACION DEL RECURSO
         curso.actualizar_aprobacion()
         curso.save()
-        return {"Response":200}
+        #return {"Response": 200}
+        return {"Response":respuestas_ordenadas}
 
 class CursoCargar(Resource):
     def __init__(self):
@@ -267,12 +277,18 @@ class CursoCargar(Resource):
         return response
 
 class PreguntaImagen(Resource):    
-    def get(self,id):
-        return send_file('uploads/preguntas/'+id+'_thumbnail.jpg')
+    def get(self, _id):
+        if '.jpg' in _id:
+            _id = _id[:-4]
+        path = 'uploads/preguntas/' + _id + '_thumbnail.jpg'
+        if not  os.path.exists(path):
+            path = 'uploads/preguntas/' + _id + '.jpg'
+        return send_file(path)
+            
 
-    def post(self,id):
+    def post(self, _id):
         imagen = Image.open(request.files['imagen'].stream).convert("RGB")
-        imagen.save(os.path.join("./uploads/preguntas", str(id)+".jpg"))
+        imagen.save(os.path.join("./uploads/preguntas", str(_id)+".jpg"))
         imagen.thumbnail((500, 500))
-        imagen.save(os.path.join("./uploads/preguntas", str(id)+'_thumbnail.jpg'))
+        imagen.save(os.path.join("./uploads/preguntas", str(_id)+'_thumbnail.jpg'))
         return {'Response': '200'},404
