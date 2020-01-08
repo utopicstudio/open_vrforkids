@@ -81,7 +81,7 @@ def test_get_pregunta_imagen(client):
     if recurso == None:
         assert True
     else:
-        rv = client.get('/preguntas/'+str(recurso.id))
+        rv = client.get('/preguntas/default')
         if rv._status_code == 200:
             assert True
         else:
