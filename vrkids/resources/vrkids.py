@@ -291,9 +291,9 @@ class PreguntaImagen(Resource):
         upload_folder = os.path.join(upload_folder, 'preguntas')
         if not os.path.exists(upload_folder):
             os.makedirs(upload_folder)
-            
+
         imagen = Image.open(request.files['imagen'].stream).convert("RGB")
         imagen.save(os.path.join(upload_folder, str(_id)+".jpg"))
         imagen.thumbnail((500, 500))
         imagen.save(os.path.join(upload_folder, str(_id)+'_thumbnail.jpg'))
-        return {'Response': '200'},404
+        return {'Response': '200'}
