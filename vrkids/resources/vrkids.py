@@ -1,4 +1,4 @@
-from flask import Flask, Blueprint, jsonify, request, send_file
+from flask import Flask, Blueprint, jsonify, request, send_file, current_app
 from models.curso import Curso
 from models.alumno import Alumno
 from models.profesor import Profesor
@@ -287,8 +287,13 @@ class PreguntaImagen(Resource):
             
 
     def post(self, _id):
+        upload_folder = current_app.config.get('UPLOAD_FOLDER', 'uploads')
+        upload_folder = os.path.join(upload_folder, 'preguntas')
+        if not os.path.exists(upload_folder):
+            os.makedirs(upload_folder)
+            
         imagen = Image.open(request.files['imagen'].stream).convert("RGB")
-        imagen.save(os.path.join("./uploads/preguntas", str(_id)+".jpg"))
+        imagen.save(os.path.join(upload_folder, str(_id)+".jpg"))
         imagen.thumbnail((500, 500))
-        imagen.save(os.path.join("./uploads/preguntas", str(_id)+'_thumbnail.jpg'))
+        imagen.save(os.path.join(upload_folder, str(_id)+'_thumbnail.jpg'))
         return {'Response': '200'},404
