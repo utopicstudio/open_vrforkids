@@ -14,7 +14,7 @@ flask-mongoengine==0.9.5
 Flask-RESTful==0.3.7
 Flask-WTF==0.14.2
 itsdangerous==1.1.0
-Jinja2==2.10
+Jinja2==2.11.3
 jsonpickle==1.1
 Mako==1.0.8
 MarkupSafe==1.1.1
